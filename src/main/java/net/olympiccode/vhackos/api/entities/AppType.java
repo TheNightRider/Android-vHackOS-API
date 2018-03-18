@@ -3,6 +3,7 @@ package net.olympiccode.vhackos.api.entities;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
@@ -32,8 +33,13 @@ public enum AppType {
         this.id = id;
     }
 
-    public static AppType byId(int id) {
-        return Arrays.stream(AppType.values()).filter(appType -> appType.getId() == id).collect(Collectors.toList()).get(0);
+    public static AppType byId(final int id) {
+        return (AppType) Arrays.stream(AppType.values()).filter(new Predicate<AppType>() {
+            @Override
+            public boolean test(AppType appType) {
+                return appType.id == id;
+            }
+        }).collect(Collectors.toList()).get(0);
     }
     
 }

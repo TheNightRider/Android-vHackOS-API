@@ -1,12 +1,12 @@
 package net.olympiccode.vhackos.api.requests;
 
+import android.util.Log;
+
 import net.olympiccode.vhackos.api.entities.impl.vHackOSAPIImpl;
 import net.olympiccode.vhackos.api.vHackOSAPI;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 
 public class Requester {
-    private static final Logger LOG = LoggerFactory.getLogger("Requester");
     private final vHackOSAPIImpl api;
     private long lastRequest = 0;
     private final OkHttpClient httpClient;
@@ -49,7 +48,7 @@ public class Requester {
     public Response getResponse(Route.CompiledRoute route) {
         if (lastRequest >= System.currentTimeMillis() - 1000) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -85,10 +84,8 @@ public class Requester {
                     break;
                 case "36":
                     if (triesLeft <= 0) {
-                        LOG.error("Failed to relogin after 3 tries, you are probably running the game while the bot is also running.");
                         throw new LoginException("Failed to re-login after 3 tries");
                     }
-                    LOG.error("Server returned invalid access token error, trying to reconnect...");
                     api.setStatus(vHackOSAPI.Status.AWAITING_LOGIN_CONFIRMATION);
                     api.verifyDetails();
                     success = 0;
@@ -101,7 +98,6 @@ public class Requester {
             }
         } catch (RuntimeException | LoginException e) {
             e.printStackTrace();
-            System.exit(0);
         } catch (final Exception e) {
             throw new IllegalStateException("An error occurred while processing rest request", e);
         } finally {
@@ -112,7 +108,7 @@ public class Requester {
         if (success >= 2) {
             triesLeft = 3;
         }
-        if (api.isDebugResponses()) LOG.info(response[0].getJSON().toString());
+        if (api.isDebugResponses()) Log.d("Requester", response[0].getJSON().toString());
         return response[0];
     }
 }

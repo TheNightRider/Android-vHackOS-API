@@ -50,7 +50,6 @@ public class Route {
             try {
                 arguments.put("uid", api.getUid());
                 arguments.put("accesstoken", api.getAccessToken());
-                arguments.put("lang", "en");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -103,7 +102,6 @@ public class Route {
         public static final Route UPDATE = new Route("update");
         public static final Route MINER = new Route("mining");
         public static final Route MINER_ACT = new Route("mining", "action");
-        public static final Route LEADERBOARDS = new Route("ranking");
     }
 
     public static class AppStore {

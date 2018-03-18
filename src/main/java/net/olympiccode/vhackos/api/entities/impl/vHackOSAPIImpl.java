@@ -5,7 +5,6 @@ import net.olympiccode.vhackos.api.entities.Stats;
 import net.olympiccode.vhackos.api.events.Event;
 import net.olympiccode.vhackos.api.events.EventListener;
 import net.olympiccode.vhackos.api.events.StatsUpdateEvent;
-import net.olympiccode.vhackos.api.misc.Leaderboards;
 import net.olympiccode.vhackos.api.requests.Requester;
 import net.olympiccode.vhackos.api.requests.Response;
 import net.olympiccode.vhackos.api.requests.Route;
@@ -13,8 +12,6 @@ import net.olympiccode.vhackos.api.vHackOSAPI;
 import okhttp3.OkHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
@@ -25,8 +22,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 public class vHackOSAPIImpl implements vHackOSAPI {
-
-    private static final Logger LOG = LoggerFactory.getLogger("vHackOSAPI");
 
     private final OkHttpClient.Builder httpClientBuilder;
     private List<EventListener> listeners = new ArrayList<>();
@@ -45,7 +40,6 @@ public class vHackOSAPIImpl implements vHackOSAPI {
     private TaskManagerImpl taskManager = new TaskManagerImpl(this);
     private NetworkManagerImpl networkManager = new NetworkManagerImpl(this);
     private MinerImpl miner = new MinerImpl(this);
-    private Leaderboards leaderboards = new LeaderboardsImpl(this);
     private ScheduledExecutorService executorService =  Executors.newScheduledThreadPool(corePoolSize, new APIThreadFactory());
 
     public vHackOSAPIImpl(OkHttpClient.Builder httpClientBuilder, boolean autoReconnect, int maxReconnectDelay, int corePoolSize) {
@@ -77,7 +71,6 @@ public class vHackOSAPIImpl implements vHackOSAPI {
             JSONObject userResponse = resp.getJSON();
             this.accessToken = userResponse.getString("accesstoken");
             this.uid = userResponse.getString("uid");
-            LOG.info("Login Successful!");
         } catch (RuntimeException e) {
             Throwable ex = e.getCause() != null ? e.getCause().getCause() : null;
             if (ex instanceof LoginException)
@@ -92,7 +85,6 @@ public class vHackOSAPIImpl implements vHackOSAPI {
 
     private void setup() {
         setStatus(Status.LOADING_SUBSYSTEMS);
-        LOG.info("Loading subsystems...");
         updateData();
         taskManager.reloadTasks();
         executorService.scheduleAtFixedRate(() -> updateData(), 30000, 30000, TimeUnit.MILLISECONDS);
@@ -102,7 +94,6 @@ public class vHackOSAPIImpl implements vHackOSAPI {
     }
 
     private void updateData() {
-        LOG.debug("Updating data");
         Route.CompiledRoute route = Route.Misc.UPDATE.compile(this);
         Response resp = getRequester().getResponse(route);
         try {
@@ -134,7 +125,9 @@ public class vHackOSAPIImpl implements vHackOSAPI {
         this.status = status;
     }
 
-    public void addEventListener(Object... listener) { for (Object o : listener) if (o instanceof EventListener) listeners.add((EventListener) o); }
+    public void addEventListener(Object... listener) {
+        for (Object o : listener) if (o instanceof EventListener) listeners.add((EventListener) o);
+    }
 
     public Status getStatus() {
         return status;
@@ -160,7 +153,9 @@ public class vHackOSAPIImpl implements vHackOSAPI {
         this.password = password;
     }
 
-    public void removeEventListener(Object... listener) { for (Object o : listener) if (o instanceof EventListener) listeners.remove(o); }
+    public void removeEventListener(Object... listener) {
+        for (Object o : listener) if (o instanceof EventListener) listeners.remove(o);
+    }
 
     public void setDebugResponses(boolean debugResponses) {
         this.debugResponses = debugResponses;
@@ -199,9 +194,6 @@ public class vHackOSAPIImpl implements vHackOSAPI {
     }
 
     public MinerImpl getMiner() { return miner; }
-
-    public Leaderboards getLeaderboards() { return leaderboards; }
-
     class APIThreadFactory implements ThreadFactory {
         private int counter = 0;
         private String prefix = "vHackOSAPI";

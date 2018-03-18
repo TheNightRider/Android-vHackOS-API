@@ -47,10 +47,10 @@ public class Response implements Closeable
 
             switch (begin) {
                 case '{':
-                    this.response = new JSONObject(new JSONTokener(reader)).toString();
+                    this.response = new JSONObject(new JSONTokener(reader.lines().toString())).toString();
                     break;
                 case '[':
-                    this.response = new JSONArray(new JSONTokener(reader)).toString();
+                    this.response = new JSONArray(new JSONTokener(reader.lines().toString())).toString();
                     break;
                 default:
                     this.response = reader.lines().collect(Collectors.joining());

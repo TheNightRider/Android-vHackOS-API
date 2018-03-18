@@ -1,25 +1,37 @@
 package net.olympiccode.vhackos.api.utils;
 
-import javax.xml.bind.DatatypeConverter;
+import android.util.Base64;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 public class Encryption {
     public static String md5Hash(String str) {
+        final String MD5 = "MD5";
         try {
-            MessageDigest instance = MessageDigest.getInstance("MD5");
-            instance.update(str.getBytes());
-            byte[] digest = instance.digest();
-            return DatatypeConverter
-                    .printHexBinary(digest).toLowerCase();
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(str.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return "";
         }
+        return "";
     }
 
     public static String base64Encrypt(String string) {
-        return new String(Base64.getEncoder().encode(string.getBytes())).replaceAll("=", "");
+        return new String(Base64.encode(string.getBytes(), Base64.DEFAULT)).replaceAll("=", "");
     }
 }
