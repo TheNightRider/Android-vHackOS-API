@@ -68,6 +68,8 @@ public class vHackOSAPIImpl implements vHackOSAPI {
         Route.CompiledRoute r = Route.Misc.LOGIN.compile(this);
         try {
             Response resp = getRequester().getResponse(r);
+            if(resp == null)
+                throw new LoginException("An error occured, the server responded invalid.");
             JSONObject userResponse = resp.getJSON();
             this.accessToken = userResponse.getString("accesstoken");
             this.uid = userResponse.getString("uid");
@@ -87,10 +89,30 @@ public class vHackOSAPIImpl implements vHackOSAPI {
         setStatus(Status.LOADING_SUBSYSTEMS);
         updateData();
         taskManager.reloadTasks();
-        executorService.scheduleAtFixedRate(() -> updateData(), 30000, 30000, TimeUnit.MILLISECONDS);
-        executorService.scheduleAtFixedRate(() -> taskManager.checkTasks(), 1000, 1000, TimeUnit.MILLISECONDS);
-        executorService.scheduleAtFixedRate(() -> taskManager.reloadTasks(), 30000, 30000, TimeUnit.MILLISECONDS);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> executorService.shutdownNow()));
+        executorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                updateData();
+            }
+        },30000, 30000, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                taskManager.checkTasks();
+            }
+        }, 1000, 1000, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                taskManager.reloadTasks();
+            }
+        }, 30000, 30000, TimeUnit.MILLISECONDS);
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                executorService.shutdownNow();
+            }
+        }));
     }
 
     private void updateData() {

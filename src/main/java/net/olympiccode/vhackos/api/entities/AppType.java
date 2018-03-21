@@ -33,6 +33,22 @@ public enum AppType {
         this.id = id;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public static AppType byId(final int id) {
         return (AppType) Arrays.stream(AppType.values()).filter(new Predicate<AppType>() {
             @Override

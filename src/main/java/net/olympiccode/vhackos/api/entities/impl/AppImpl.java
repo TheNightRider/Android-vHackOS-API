@@ -39,5 +39,65 @@ public class AppImpl implements App {
         return new UpdateableAppImpl(api, type, price, level, requiredLevel, maxLevel);
     }
 
+    @Override
+    public AppType getType() {
+        return type;
+    }
 
+    @Override
+    public boolean isOneTime() {
+        return oneTime;
+    }
+
+    @Override
+    public int getLevel() {
+        return level;
+    }
+
+    @Override
+    public long getPrice() {
+        return price;
+    }
+
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+
+    @Override
+    public int getRequiredLevel() {
+        return requiredLevel;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
+    }
+
+    public void setType(AppType type) {
+        this.type = type;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setRequiredLevel(int requiredLevel) {
+        this.requiredLevel = requiredLevel;
+    }
+
+    public void setInstalled(boolean installed) {
+        this.installed = installed;
+    }
+
+    public void setMaxLevel(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
+
+    public void setOneTime(boolean oneTime) {
+        this.oneTime = oneTime;
+    }
+
+    @Override
+    public boolean isInstalled() {
+        return installed;
+    }
 }

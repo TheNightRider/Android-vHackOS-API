@@ -50,6 +50,7 @@ public class Route {
             try {
                 arguments.put("uid", api.getUid());
                 arguments.put("accesstoken", api.getAccessToken());
+                arguments.put("lang", "en");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

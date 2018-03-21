@@ -45,12 +45,19 @@ public class Response implements Closeable
 
             reader.reset();
 
+            String json = "";
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                json+=line+"\n";
+            }
+
             switch (begin) {
                 case '{':
-                    this.response = new JSONObject(new JSONTokener(reader.lines().toString())).toString();
+                    this.response = new JSONObject(new JSONTokener(json)).toString();
                     break;
                 case '[':
-                    this.response = new JSONArray(new JSONTokener(reader.lines().toString())).toString();
+
+                    this.response = new JSONArray(new JSONTokener(json)).toString();
                     break;
                 default:
                     this.response = reader.lines().collect(Collectors.joining());

@@ -40,6 +40,11 @@ public class AppManagerImpl implements AppManager {
         return l;
     }
     public App getApp(AppType type) {
+        List<App> apps = getApps();
+        if(apps == null)
+            throw new IllegalArgumentException();
+        if(apps.size() <=0)
+            throw new IllegalArgumentException();
         return getApps().get(type.getId());
     }
 
