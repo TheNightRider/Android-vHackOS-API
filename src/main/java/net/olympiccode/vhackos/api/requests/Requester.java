@@ -4,6 +4,8 @@ import android.util.Log;
 
 import net.olympiccode.vhackos.api.entities.impl.vHackOSAPIImpl;
 import net.olympiccode.vhackos.api.vHackOSAPI;
+
+import at.atvg_studios.gitlab.whiteiron.api.Notifier;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.json.JSONObject;

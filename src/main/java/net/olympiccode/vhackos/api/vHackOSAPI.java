@@ -4,6 +4,7 @@ import net.olympiccode.vhackos.api.appstore.AppManager;
 import net.olympiccode.vhackos.api.appstore.TaskManager;
 import net.olympiccode.vhackos.api.entities.Stats;
 import net.olympiccode.vhackos.api.events.EventListener;
+import net.olympiccode.vhackos.api.misc.Leaderboards;
 import net.olympiccode.vhackos.api.misc.Miner;
 import net.olympiccode.vhackos.api.network.NetworkManager;
 
@@ -13,12 +14,13 @@ public interface vHackOSAPI {
 
     enum Status
     {
-        INITIALIZING(true),
+        INITIALIZING,
         INITIALIZED(true),
-        LOGGING_IN(true),
-        AWAITING_LOGIN_CONFIRMATION(true),
-        LOADING_SUBSYSTEMS(true),
-        CONNECTED(true),
+        LOGGING_IN,
+        AWAITING_LOGIN_CONFIRMATION,
+        AWAITING_PRELOGIN_CHECK,
+        LOADING_SUBSYSTEMS,
+        CONNECTED,
         SHUTDOWN,
         FAILED_TO_LOGIN;
 
@@ -58,6 +60,8 @@ public interface vHackOSAPI {
     NetworkManager getNetworkManager();
 
     Miner getMiner();
+
+    Leaderboards getLeaderboards();
 
 }
 

@@ -23,9 +23,7 @@ public enum AppType {
             MalwareKit ("Malware Kit", 12),
             Jobs ("Jobs", 13);
 
-    @Getter
     private String name;
-    @Getter
     private int id;
 
     AppType(String name, int id) {

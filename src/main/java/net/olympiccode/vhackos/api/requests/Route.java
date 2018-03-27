@@ -103,6 +103,7 @@ public class Route {
         public static final Route UPDATE = new Route("update");
         public static final Route MINER = new Route("mining");
         public static final Route MINER_ACT = new Route("mining", "action");
+        public static final Route LEADERBOARDS = new Route("ranking");
     }
 
     public static class AppStore {
@@ -121,7 +122,7 @@ public class Route {
         public static final Route EXPLOIT = new Route("exploit", "target");
         public static final Route REMOTE = new Route("remote", "target");
         public static final Route REMOTE_BANKING = new Route("remotebanking", "target");
-        public static final Route BANKING_RETRIEVE = new Route("remotebanking", "action", "target");
+        public static final Route BANKING_RETRIEVE = new Route("remotebanking", "action", "target", "amount");
         public static final Route START_BRUTEFORCE = new Route("startbruteforce", "target");
         public static final Route GET_LOG = new Route("remotelog", "target");
         public static final Route EDIT_LOG = new Route("remotelog", "target", "action", "log");
