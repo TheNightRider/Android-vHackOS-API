@@ -20,8 +20,10 @@ public enum AppType {
             Leaderboards ("Leaderboards", 9),
             IPSP ("IP-Spoofing", 10),
             NCMiner ("NCMiner", 11),
-            MalwareKit ("Malware Kit", 12),
-            Jobs ("Jobs", 13);
+            Crew("Crew", 12),
+            Server("Server", 13),
+            MalwareKit ("Malware Kit", 14),
+            Jobs ("Jobs", 15);
 
     private String name;
     private int id;

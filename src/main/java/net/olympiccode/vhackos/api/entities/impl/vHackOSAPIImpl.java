@@ -36,6 +36,7 @@ public class vHackOSAPIImpl implements vHackOSAPI {
     private boolean invalidToken = false;
     private boolean debugResponses = false;
     private boolean preLogin;
+    private int[] sleepTime;
 
     private StatsImpl stats = new StatsImpl(this);
     private AppManagerImpl appManager = new AppManagerImpl(this);
@@ -43,15 +44,17 @@ public class vHackOSAPIImpl implements vHackOSAPI {
     private NetworkManagerImpl networkManager = new NetworkManagerImpl(this);
     private MinerImpl miner = new MinerImpl(this);
     private Leaderboards leaderboards = new LeaderboardsImpl(this);
+    private ServerImpl server = new ServerImpl(this);
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(corePoolSize, new APIThreadFactory());
 
-    public vHackOSAPIImpl(OkHttpClient.Builder httpClientBuilder, boolean autoReconnect, int maxReconnectDelay, int corePoolSize, boolean preLogin) {
+    public vHackOSAPIImpl(OkHttpClient.Builder httpClientBuilder, boolean autoReconnect, int maxReconnectDelay, int corePoolSize, boolean preLogin, int[] sleepTime) {
         this.httpClientBuilder = httpClientBuilder;
         boolean autoReconnect1 = autoReconnect;
         this.preLogin = preLogin;
         int maxReconnectDelay1 = maxReconnectDelay;
         this.requester = new Requester(this);
         this.corePoolSize = corePoolSize;
+        this.sleepTime = sleepTime;
     }
 
     public void login(String username, String password, String... preLoginData) throws LoginException {
@@ -124,6 +127,7 @@ public class vHackOSAPIImpl implements vHackOSAPI {
         executorService.scheduleAtFixedRate(() -> updateData(), 30000, 30000, TimeUnit.MILLISECONDS);
         executorService.scheduleAtFixedRate(() -> taskManager.checkTasks(), 1000, 1000, TimeUnit.MILLISECONDS);
         executorService.scheduleAtFixedRate(() -> taskManager.reloadTasks(), 30000, 30000, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(() -> server.update(), 10000, 10000, TimeUnit.MILLISECONDS);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> executorService.shutdownNow()));
         setStatus(Status.INITIALIZED);
     }
@@ -158,6 +162,14 @@ public class vHackOSAPIImpl implements vHackOSAPI {
 
     public void addEventListener(Object... listener) {
         for (Object o : listener) if (o instanceof EventListener) listeners.add((EventListener) o);
+    }
+
+    public int[] getSleepTime() {
+        return sleepTime;
+    }
+
+    public Server getServer() {
+        return server;
     }
 
     public Status getStatus() {

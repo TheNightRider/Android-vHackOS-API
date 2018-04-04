@@ -23,6 +23,28 @@ public class Requester {
 
     private volatile boolean retryOnTimeout = false;
 
+    int sleepTime = -1;
+    int sleepTime2 = -1;
+    boolean sleepFixed = false;
+    private int getSleepTime() {
+        if (sleepTime != -1) {
+            if (sleepFixed) {
+                return sleepTime;
+            } else {
+               return sleepTime + new Random().nextInt(sleepTime2 - sleepTime);
+            }
+        }
+        if (api.getSleepTime()[1] == -1) {
+            sleepTime = api.getSleepTime()[0];
+            sleepFixed = true;
+            return getSleepTime();
+        } else {
+            sleepTime = api.getSleepTime()[0];
+            sleepTime2 = api.getSleepTime()[1];
+            sleepFixed = false;
+            return getSleepTime();
+        }
+    }
 
     public Requester(vHackOSAPI api) {
 
@@ -50,9 +72,9 @@ public class Requester {
     public Response getResponse(Route.CompiledRoute route) {
         if (lastRequest >= System.currentTimeMillis() - 1000) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(getSleepTime());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
 
@@ -77,9 +99,10 @@ public class Requester {
         try {
             JSONObject object = response[0].getJSON();
 
+            if (object.get("result") == null) return getResponse(route);
             switch (object.getString("result")) {
                 case "2":
-                    if (!route.getCompiledRoute().contains("remotelog")) {
+                    if (!route.getCompiledRoute().contains("remotelog") && !route.getCompiledRoute().contains("bruteforce")) {
                         api.setStatus(vHackOSAPI.Status.FAILED_TO_LOGIN);
                         throw new LoginException("Invalid username or password");
                     }
