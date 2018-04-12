@@ -21,8 +21,8 @@ repositories {
 
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.16.20'
-    compileOnly 'org.projectlombok:lombok:1.16.20'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    implementation 'org.projectlombok:lombok:1.16.20'
+    implementation 'com.squareup.okhttp3:okhttp:3.4.1'
 }
 ```
 
